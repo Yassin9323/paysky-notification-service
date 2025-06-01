@@ -1,0 +1,87 @@
+####################
+# .NET Build Files #
+####################
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+#####################
+# Visual Studio Code #
+#####################
+.vscode/
+.vscode-test/
+
+####################
+# OS Files #
+####################
+.DS_Store
+Thumbs.db
+
+#########################
+# Environment Variables #
+#########################
+.env
+*.env.*
+
+##################
+# Logs #
+##################
+logs/
+*.log
+
+##################
+# Docker #
+##################
+/docker-compose.override.yml
+*.pid
+
+########################
+# Hangfire Job Storage #
+########################
+hangfire.db
+hangfire-log/
+
+#########################
+# Rider IDE #
+#########################
+.idea/
+*.sln.iml
+
+#########################
+# EF Core Migrations #
+#########################
+Migrations/
+
+##################
+# Testing #
+##################
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.testlog
+*.trx
+
+##################
+# NCrunch #
+##################
+.ncrunch*
+*_ncrunch_*
+.*crunch*.local.xml
+
+##################
+# JetBrains #
+##################
+_ReSharper*/
+*.ReSharper
+*.DotSettings.user
+
+##################
+# Others #
+##################
+*.swp
+*.swo
+*.bak
