@@ -4,6 +4,10 @@ using Hangfire.PostgreSql;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using NotificationService.Infrastructure.Logging;
+using NotificationService.Infrastructure.configuration;
+using NotificationService.Application.Interfaces;
+using NotificationService.Application.Dtos;
+using NotificationService.Infrastructure.Services;
 
 namespace NotificationService.Infrastructure
 {
@@ -18,14 +22,18 @@ namespace NotificationService.Infrastructure
                 .UseSimpleAssemblyNameTypeSerializer()
                 );
 
-            services.AddHangfireServer();
+            services.AddHangfireServer(options =>
+            {
+                options.Queues = new[] { "email", "sms", "any" };
+            });
 
             var loggerSettings = configuration
             .GetSection("LoggerSettings")
             .Get<LoggerSettings>();
 
             services.RegisterLoggerDependencies(loggerSettings);
-
+            services.Configure<VongageSettings>(configuration.GetSection("VongageSettings"));
+            services.AddTransient<INotificationService<SmsNotificationDto>, SmsService>();
             return services;
         }
     }
