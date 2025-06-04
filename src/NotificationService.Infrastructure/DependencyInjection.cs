@@ -4,10 +4,11 @@ using Hangfire.PostgreSql;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using NotificationService.Infrastructure.Logging;
-using NotificationService.Infrastructure.configuration;
+using NotificationService.Infrastructure.Configuration;
 using NotificationService.Application.Interfaces;
 using NotificationService.Application.Dtos;
 using NotificationService.Infrastructure.Services;
+using NotificationService.Infrastructure.BackgroundJobs;
 
 namespace NotificationService.Infrastructure
 {
@@ -17,7 +18,8 @@ namespace NotificationService.Infrastructure
         {
             // Register Hangfire with PostgreSQL storage
             services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection"))
+                config.UsePostgreSqlStorage(options =>
+                    options.UseNpgsqlConnection(configuration.GetConnectionString("HangfireConnection")))
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 );
@@ -27,13 +29,28 @@ namespace NotificationService.Infrastructure
                 options.Queues = new[] { "email", "sms", "any" };
             });
 
+            // Configure logging
             var loggerSettings = configuration
-            .GetSection("LoggerSettings")
-            .Get<LoggerSettings>();
+                .GetSection("LoggerSettings")
+                .Get<LoggerSettings>();
 
-            services.RegisterLoggerDependencies(loggerSettings);
+            if (loggerSettings != null)
+            {
+                services.RegisterLoggerDependencies(loggerSettings);
+            }
+            
+            // Configure external service settings
             services.Configure<VongageSettings>(configuration.GetSection("VongageSettings"));
+            services.Configure<MailtrapSettings>(configuration.GetSection("MailtrapSettings"));
+            
+            // Register notification services (implementing INotificationService<T>)
             services.AddTransient<INotificationService<SmsNotificationDto>, SmsService>();
+            services.AddTransient<INotificationService<EmailNotificationDto>, EmailService>();
+            
+            // Register job executors for Hangfire
+            services.AddTransient<ISmsJobExecutor, SmsJobExecutor>();
+            services.AddTransient<IEmailJobExecutor, EmailJobExecutor>();
+            
             return services;
         }
     }

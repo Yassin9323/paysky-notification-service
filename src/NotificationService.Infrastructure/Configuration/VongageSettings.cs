@@ -1,4 +1,4 @@
-namespace NotificationService.Infrastructure.configuration
+namespace NotificationService.Infrastructure.Configuration
 {
     /// <summary>
     /// Represents the settings for Vongo SMS service.
@@ -8,12 +8,12 @@ namespace NotificationService.Infrastructure.configuration
         /// <summary>
         /// Gets or sets the API key for Vongo SMS service.
         /// </summary>
-        public string ApiKey { get; set; }
+        public string ApiKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the API secret for Vongo SMS service.
         /// </summary>
-        public string ApiSecret { get; set; }
+        public string ApiSecret { get; set; } = string.Empty;
 
     }
 }

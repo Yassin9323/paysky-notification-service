@@ -1,11 +1,22 @@
 using Hangfire;
 using NotificationService.Infrastructure;
+using NotificationService.Application;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers(); // Add this for API controllers
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
+
+// Add Application layer (business logic, validators)
+builder.Services.AddApplication();
+
+// Add Infrastructure layer (Hangfire, external services, logging)
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
@@ -20,7 +31,11 @@ if (app.Environment.IsDevelopment())
 app.UseHangfireDashboard();
 app.UseHttpsRedirection();
 
+// Add health check middleware
+app.UseHealthChecks("/health");
 
+// Add controller routing
+app.MapControllers();
 
 app.Run();
 

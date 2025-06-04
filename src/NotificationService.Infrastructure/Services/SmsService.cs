@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NotificationService.Application.Dtos;
 using NotificationService.Application.Interfaces;
-using NotificationService.Infrastructure.configuration;
+using NotificationService.Infrastructure.Configuration;
 using Vonage;
 using NotificationService.Infrastructure.Logging;
 
