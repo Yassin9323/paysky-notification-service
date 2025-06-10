@@ -11,16 +11,14 @@ namespace NotificationService.API.Controllers
     {
         private readonly INotificationRequestHandler _notificationHandler;
         private readonly ILogger<NotificationsController> _logger;
-        private readonly IValidator<NotificationRequestDto> _validator;
 
         public NotificationsController(
             INotificationRequestHandler notificationHandler,
-            ILogger<NotificationsController> logger,
-            IValidator<NotificationRequestDto> validator)
+            ILogger<NotificationsController> logger
+        )
         {
             _notificationHandler = notificationHandler;
             _logger = logger;
-            _validator = validator;
         }
 
         /// <summary>

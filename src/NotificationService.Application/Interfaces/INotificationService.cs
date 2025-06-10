@@ -20,7 +20,6 @@ namespace NotificationService.Application.Interfaces
     /// ///     }
     /// /// }
     /// /// </code>
-
     public interface INotificationService<TNotification>
     {
         Task SendNotificationAsync(TNotification notification);

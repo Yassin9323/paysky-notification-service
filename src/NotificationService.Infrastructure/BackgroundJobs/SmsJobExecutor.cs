@@ -40,7 +40,6 @@ namespace NotificationService.Infrastructure.BackgroundJobs
             catch (Exception ex)
             {
                 _logger.LogError(ex, "SMS job failed for {PhoneNumber}", smsDto.To);
-                
                 // Re-throw to let Hangfire handle retries as per your SDD
                 throw;
             }
