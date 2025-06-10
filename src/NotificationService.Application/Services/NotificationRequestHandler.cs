@@ -38,10 +38,11 @@ namespace NotificationService.Application.Services
                 {
                     "sms" => await HandleSmsNotification(request),
                     "email" => await HandleEmailNotification(request),
+                    "any" => await HandleAnyTypeNotification(request),
                     _ => throw new ArgumentException($"Unsupported notification type: {request.Type}")
                 };
 
-                _logger.LogInformation("Successfully enqueued {Type} notification with job ID: {JobId}", 
+                _logger.LogInformation("Successfully enqueued {Type} notification with job ID: {JobId}",
                     request.Type, jobId);
 
                 return jobId;
@@ -68,7 +69,7 @@ namespace NotificationService.Application.Services
 
             // Enqueue to "sms" queue as defined in your SDD
             var jobId = _backgroundJobClient.Enqueue<ISmsJobExecutor>(
-                "sms", 
+                "sms",
                 executor => executor.ExecuteAsync(request.Sms));
 
             return Task.FromResult(jobId);
@@ -89,10 +90,29 @@ namespace NotificationService.Application.Services
 
             // Enqueue to "email" queue as defined in your SDD
             var jobId = _backgroundJobClient.Enqueue<IEmailJobExecutor>(
-                "email", 
+                "email",
                 executor => executor.ExecuteAsync(request.Email));
 
             return Task.FromResult(jobId);
+        }
+
+        private Task<string> HandleAnyTypeNotification(NotificationRequestDto request)
+        {
+            if (request.Email == null || request.Sms == null)
+            {
+                throw new ArgumentException("both Email or SMS details are required for notifications");
+            }
+            _logger.LogDebug("Enqueuing notification with details: {Details}", request);
+            // Enqueue to "any" queue as defined in your SDD
+            var jobId = _backgroundJobClient.Enqueue<IEmailJobExecutor>(
+               "email",
+               executor => executor.ExecuteAsync(request.Email));
+
+            var job2Id = _backgroundJobClient.Enqueue<ISmsJobExecutor>(
+                 "sms",
+                 executor => executor.ExecuteAsync(request.Sms)); 
+            
+            return Task.FromResult($"{jobId},{job2Id}");
         }
     }
 }

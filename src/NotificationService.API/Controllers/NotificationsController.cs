@@ -35,17 +35,6 @@ namespace NotificationService.API.Controllers
             {
                 _logger.LogInformation("Received notification request of type: {NotificationType}", request.Type);
 
-                // Validate using FluentValidation
-                var validationResult = await _validator.ValidateAsync(request);
-                if (!validationResult.IsValid)
-                {
-                    _logger.LogWarning("Invalid notification request received");
-                    return BadRequest(validationResult.Errors.Select(e => new { 
-                        Field = e.PropertyName, 
-                        Error = e.ErrorMessage 
-                    }));
-                }
-
                 // Enqueue the job and get job ID
                 var jobId = await _notificationHandler.HandleAsync(request);
 
