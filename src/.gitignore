@@ -85,3 +85,9 @@ _ReSharper*/
 *.swp
 *.swo
 *.bak
+
+# IDE and Output folders
+.vs/
+dist/
+bin/
+obj/

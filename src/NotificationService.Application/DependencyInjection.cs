@@ -4,7 +4,9 @@ using NotificationService.Application.Interfaces;
 using NotificationService.Application.Services;
 using NotificationService.Application.Validators;
 using NotificationService.Application.Dtos;
+#if !NETSTANDARD2_0
 using FluentValidation.AspNetCore;
+#endif
 
 namespace NotificationService.Application
 {
@@ -19,9 +21,10 @@ namespace NotificationService.Application
             // Register the main notification request handler
             services.AddScoped<INotificationRequestHandler, NotificationRequestHandler>();
 
+#if !NETSTANDARD2_0
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();
-            services.AddFluentValidationAutoValidation();
+#endif
 
             // Register FluentValidation validators explicitly
             services.AddScoped<IValidator<NotificationRequestDto>, NotificationRequestValidator>();

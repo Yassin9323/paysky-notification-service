@@ -32,6 +32,7 @@ namespace NotificationService.Infrastructure.BackgroundJobs
 
             try
             {
+                emailDto.From = "ahmed.eh01@gmail.com";
                 // Delegate actual email sending to the email service
                 await _emailService.SendNotificationAsync(emailDto);
 
